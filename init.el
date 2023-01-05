@@ -32,7 +32,7 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 ;; Don't clutter my folders
-(setq user-emacs-directory (expand-file-name "~/.cache/emacs"))
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs2"))
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 ;; auto-save files (#something#)
@@ -53,10 +53,6 @@
 ;; (column-number-mode 1)
 (global-subword-mode 1)
 (setq default-input-method "arabic")
-(defun kill-curr-buffer ()
-  (interactive)
-  (kill-buffer (current-buffer)))
-(global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)
 (setq-default image-mode nil)
@@ -101,18 +97,24 @@
 ;; vim-like scrolling
 (setq scroll-conservatively 100)
 (setq ring-bell-function 'ignore)
-(set-background-color "black")
-(set-foreground-color "white")
-(set-cursor-color "white")
+;; transparancy
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+
+;; (set-background-color "black")
+;; (set-foreground-color "white")
+;; (set-cursor-color "white")
 ;; Line numbers
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+;; (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 ;; (global-display-line-numbers-mode 1)
 (blink-cursor-mode -1)
 ;; (setq scroll-margin 0
 ;;       scroll-conservatively 100000
 ;;       scroll-preserve-screen-position 1)
 ;; Do not load xresources
-(setq-default inhibit-x-resources 1)
+;; (setq-default inhibit-x-resources 1)
 
 ;; count the number of lines to use for line number width
 ;; (setq-default display-line-numbers-width-start t)
@@ -123,16 +125,16 @@
 ;; (global-hl-line-mode nil)
 
 ;; System notifications
-;; (setq compilation-finish-functions
-;;       (append compilation-finish-functions
-;;               '(fmq-compilation-finish)))
+(setq compilation-finish-functions
+      (append compilation-finish-functions
+              '(fmq-compilation-finish)))
 
-;; (defun fmq-compilation-finish (buffer status)
-;;   (call-process "notify-send" nil nil nil
-;;                 "-t" "0"
-;;                 "-i" "emacs"
-;;                 "Compilation finished in Emacs"
-;;                 status))
+(defun fmq-compilation-finish (buffer status)
+  (call-process "notify-send" nil nil nil
+                "-t" "0"
+                "-i" "emacs"
+                "Compilation finished in Emacs"
+                status))
 
 ;; (use-package notifications
 ;; :config (notifications-notify
@@ -155,7 +157,7 @@
 (set-face-attribute 'fixed-pitch nil :font "monospace" :height 135)
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Sans" :height 135 :weight 'regular)
-(set-fontset-font "fontset-default" 'arabic (font-spec :family "DejaVu Sans Mono"))
+;; (set-fontset-font "fontset-default" 'arabic (font-spec :family "DejaVu Sans Mono"))
 (setq my/font-change-increment 1.1)
 
 
@@ -201,7 +203,7 @@
          ;; ("M-u"     . universal-argument)
          ("M-1" . delete-other-windows)
          ;; ("C-;" . comment-line)
-				 ("C-'" . toggle-input-method)
+				 ("C-;" . toggle-input-method)
          ("C-x C-;" . comment-box)
 				 ))
 
@@ -212,16 +214,16 @@
 
 (define-key input-decode-map "\e[1;2A" [S-up])
 
-electric paris for automatically closing brackets
-(setq electric-pair-pairs '(
-                            (?\( . ?\))
-                            (?\[ . ?\])
-                            ))
-(electric-pair-mode t)
-;; (auto-revert-mode t)
-;; for automatically indenting new lines
-(electric-indent-mode +1)
+;; electric paris for automatically closing brackets
+;; (setq electric-pair-pairs '(
+;;                             (?\( . ?\))
+;;                             (?\[ . ?\])
+;;                             ))
+;; (electric-pair-mode t)
+;; (electric-indent-mode +1)
 
+
+;; (auto-revert-mode t)
 
 ;; Latex settings
 
@@ -361,7 +363,7 @@ electric paris for automatically closing brackets
   :bind
   (:map company-active-map
         ("<tab>" . company-complete-selection)
-				("RET" . nil)
+				;; ("RET" . nil)
         ;; ("<escape>" . company-abort)
         )
   ;; (:map lsp-mode-map
@@ -406,9 +408,8 @@ electric paris for automatically closing brackets
 	:hook
 	(prog-mode)
   :config
-  (evil-define-key 'normal flycheck-mode-map (kbd "M-p") 'flycheck-next-error)
-  (evil-define-key 'normal flycheck-mode-map (kbd "M-n") 'flycheck-previous-error)))
-  )
+  (evil-define-key 'normal flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
+  (evil-define-key 'normal flycheck-mode-map (kbd "M-p") 'flycheck-previous-error))
 
 (use-package web-mode
   :ensure t
@@ -444,11 +445,6 @@ electric paris for automatically closing brackets
 ;; (setq save-place-file (expand-file-name "saveplace" my/savefile-dir))
 ;; activate it for all buffers
 ;; (setq-default save-place t))
-
-(use-package subword
-  :ensure t
-  :config (global-subword-mode 1))
-
 
 ;; leetcode
 (use-package leetcode
@@ -493,4 +489,3 @@ electric paris for automatically closing brackets
 
 ;; ;; treesitter
 (add-hook 'java-mode-hook 'java-ts-mode)
-
